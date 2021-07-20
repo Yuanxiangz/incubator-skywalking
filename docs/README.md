@@ -1,60 +1,31 @@
-## Documents
-[![cn doc](https://img.shields.io/badge/document-中文-blue.svg)](README_ZH.md)
+# Welcome
+**This is the official documentation of SkyWalking 8. Welcome to the SkyWalking community!**
 
-  * Getting Started
-    * [Quick start](en/Quick-start.md)
-    * [Install javaagent](en/Deploy-skywalking-agent.md)
-    * [Deploy backend in cluster mode](en/Deploy-backend-in-cluster-mode.md)
-    * [Supported middlewares, frameworks and libraries](Supported-list.md)
-      * [How to disable plugins?](en/How-to-disable-plugin.md)
-      * [Optional plugins](en/Optional-plugins.md)
-        * [Trace Spring beans](en/agent-optional-plugins/Spring-bean-plugins.md)
-        * [Trace Oracle and Resin](en/agent-optional-plugins/Oracle-Resin-plugins.md)
-        * [[**Incubating**] Filter traces through custom services](../apm-sniffer/optional-plugins/trace-ignore-plugin/README.md)
-  * [Architecture Design](en/Architecture.md)
-  * Advanced Features
-    * [Override settings through System.properties](en/Setting-override.md)
-    * [Direct uplink and disable naming discovery](en/Direct-uplink.md)
-    * [Open TLS](en/TLS.md)
-    * [Namespace Isolation](en/Namespace.md)
-    * [Token Authentication](en/Token-auth.md)
-    * [Add your own component library settings in collector](en/Component-libraries-extend.md)
-  * Incubating Features
-    * [Why are some features in **Incubating**?](en/Incubating/Abstract.md)
-    * [Use Sharding JDBC as storage implementor](en/Use-ShardingJDBC-as-storage-implementor.md)
-    * [Receive Zipkin span data format](../apm-collector/apm-collector-thirdparty-receiver/receiver-zipkin/docs/README.md)
-  * Application Toolkit
-    * [Overview](en/Applicaton-toolkit.md)
-    * [Use SkyWalking OpenTracing compatible tracer](en/Opentracing.md)
-    * Integration with log frameworks
-      * [log4j](en/Application-toolkit-log4j-1.x.md)
-      * [log4j2](en/Application-toolkit-log4j-2.x.md)
-      * [logback](en/Application-toolkit-logback-1.x.md)
-    * [Trace by SkyWalking manual APIs](en/Application-toolkit-trace.md)
-    * [Trace across threads](en/Application-toolkit-trace-cross-thread.md)
-  * Testing
-    * [Plugin Test](https://github.com/SkywalkingTest/agent-integration-test-report)
-    * [Java Agent Performance Test](https://skywalkingtest.github.io/Agent-Benchmarks/)
-  * Development Guides
-    * [How to build project](en/How-to-build.md)
-    * [Plugin development guide](en/Plugin-Development-Guide.md)
-    * [Collector table description](en/Collector-Table-Description.md)
-    * Protocol
-      * [Cross Process Propagation Headers Protocol, v1.0](en/Skywalking-Cross-Process-Propagation-Headers-Protocol-v1.md)
-      * [SkyWalking Trace Data Protocol](en/Trace-Data-Protocol.md)
-    * [Release Guide](en/How-to-release.md)
-  * [Roadmap](ROADMAP.md)
-  * Resources provided by community
-    * [Public speakings](https://github.com/OpenSkywalking/Community#public-speakings)
-    * [Videos](https://github.com/OpenSkywalking/Community#videos)
-    * [Articles](https://github.com/OpenSkywalking/Community#articles)
-  * FAQ
-    * [Why only traces in UI?](en/FAQ/Why-have-traces-no-others.md)
-    * [Too many GRPC logs in the console](en/FAQ/Too-many-gRPC-logs.md)
-    * [The trace doesn't continue in kafka consumer side](en/FAQ/kafka-plugin.md)
-    * [Agent or collector version upgrade](en/FAQ/Upgrade.md)
-    * [Protoc plugin fails in maven build](en/FAQ/Protoc-Plugin-Fails-When-Build.md)
-    * [EnhanceRequireObjectCache class cast exception](en/FAQ/EnhanceRequireObjectCache-Cast-Exception.md)
-    * [Required items could not be found, when import project into Eclipse](en/FAQ/Import-Project-Eclipse-RequireItems-Exception.md) 
+Here you can learn all you need to know about **SkyWalking**’s architecture, understand how to deploy and use SkyWalking, and contribute to the project based on SkyWalking's contributing guidelines.
 
-    
+**NOTE: SkyWalking 8 uses brand new tracing APIs which are incompatible with all previous releases.**
+
+- **Concepts and Designs**. You'll find the core logic behind SkyWalking. You may start from here if you want to understand what is going on under our cool features and visualization.
+
+- **Setup**. A guide to installing SkyWalking for different use cases. It is an observability platform that supports multiple observability modes.
+
+- **UI Introduction**. An introduction to the UI components and their features. 
+
+- **Contributing Guides**. If you are a PMC member, a committer, or a new contributor, learn how to start contributing with these guides!
+
+- **Protocols**. The protocols show how agents/probes and the backend communicate with one another. Anyone interested in uplink telemetry data should definitely read this.
+
+- **FAQs**. A manifest of known issues with setup and secondary developments processes. Should you encounter any problems, check here first.
+
+
+You might also find these links interesting:
+
+- The latest and old releases are all available at [Apache SkyWalking release page](https://skywalking.apache.org/downloads/). The change logs can be found [here](https://github.com/apache/skywalking/tree/master/changes).
+
+- [SkyWalking WIKI](https://cwiki.apache.org/confluence/display/SKYWALKING/Home) hosts the context of some changes and events.
+
+- You can find the conference schedules, video recordings, and articles about SkyWalking in the [community resource catalog](https://github.com/OpenSkywalking/Community).
+
+We're always looking for help to improve our documentation and codes, so please don’t hesitate to [file an issue](https://github.com/apache/skywalking/issues/new) if you see any problems. 
+Or better yet, directly contribute by submitting a pull request to help us get better!
+

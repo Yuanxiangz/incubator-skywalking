@@ -16,14 +16,10 @@
  *
  */
 
-
 package org.apache.skywalking.apm.commons.datacarrier.consumer;
 
 import java.util.List;
 
-/**
- * Created by wusheng on 2016/10/25.
- */
 public interface IConsumer<T> {
     void init();
 
@@ -32,4 +28,12 @@ public interface IConsumer<T> {
     void onError(List<T> data, Throwable t);
 
     void onExit();
+
+    /**
+     * Notify the implementation, if there is nothing fetched from the queue. This could be used as a timer to trigger
+     * reaction if the queue has no element.
+     */
+    default void nothingToConsume() {
+        return;
+    }
 }

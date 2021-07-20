@@ -18,7 +18,6 @@
 
 package org.apache.skywalking.apm.plugin.hystrix.v1;
 
-import com.netflix.hystrix.HystrixCommand;
 import java.lang.reflect.Method;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
@@ -28,15 +27,13 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
-import static org.apache.skywalking.apm.plugin.hystrix.v1.Constants.ISOLATE_STRATEGY_KEY_IN_RUNNING_CONTEXT;
-
 public class HystrixCommandRunInterceptor implements InstanceMethodsAroundInterceptor {
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) throws Throwable {
         // create a local span, and continued, The `execution method` running in other thread if the
         // hystrix strategy is `THREAD`.
-        EnhanceRequireObjectCache enhanceRequireObjectCache = (EnhanceRequireObjectCache)objInst.getSkyWalkingDynamicField();
+        EnhanceRequireObjectCache enhanceRequireObjectCache = (EnhanceRequireObjectCache) objInst.getSkyWalkingDynamicField();
         ContextSnapshot snapshot = enhanceRequireObjectCache.getContextSnapshot();
 
         AbstractSpan activeSpan = ContextManager.createLocalSpan(enhanceRequireObjectCache.getOperationNamePrefix() + "/Execution");
@@ -46,8 +43,6 @@ public class HystrixCommandRunInterceptor implements InstanceMethodsAroundInterc
         }
         // Because of `fall back` method running in other thread. so we need capture concurrent span for tracing.
         enhanceRequireObjectCache.setContextSnapshot(ContextManager.capture());
-
-        ContextManager.getRuntimeContext().put(ISOLATE_STRATEGY_KEY_IN_RUNNING_CONTEXT, ((HystrixCommand)objInst).getProperties().executionIsolationStrategy().get().name().toUpperCase());
     }
 
     @Override
@@ -57,8 +52,9 @@ public class HystrixCommandRunInterceptor implements InstanceMethodsAroundInterc
         return ret;
     }
 
-    @Override public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
+    @Override
+    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
         Class<?>[] argumentsTypes, Throwable t) {
-        ContextManager.activeSpan().errorOccurred().log(t);
+        ContextManager.activeSpan().log(t);
     }
 }

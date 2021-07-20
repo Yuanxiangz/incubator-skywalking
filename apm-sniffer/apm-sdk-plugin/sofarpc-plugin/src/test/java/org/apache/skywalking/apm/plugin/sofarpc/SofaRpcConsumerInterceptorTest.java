@@ -23,9 +23,13 @@ import com.alipay.sofa.rpc.context.RpcInternalContext;
 import com.alipay.sofa.rpc.core.request.SofaRequest;
 import com.alipay.sofa.rpc.core.response.SofaResponse;
 import com.alipay.sofa.rpc.filter.ConsumerInvoker;
+import java.util.List;
 import org.apache.skywalking.apm.agent.core.conf.Config;
-import org.apache.skywalking.apm.agent.core.context.trace.*;
-import org.apache.skywalking.apm.agent.core.context.util.KeyValuePair;
+import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
+import org.apache.skywalking.apm.agent.core.context.trace.LogDataEntity;
+import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
+import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
+import org.apache.skywalking.apm.agent.core.context.util.TagValuePair;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.agent.test.helper.SegmentHelper;
@@ -45,15 +49,19 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
-import java.util.List;
-
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(TracingSegmentRunner.class)
-@PrepareForTest({RpcInternalContext.class, SofaRequest.class, SofaResponse.class})
+@PrepareForTest({
+    RpcInternalContext.class,
+    SofaRequest.class,
+    SofaResponse.class
+})
 public class SofaRpcConsumerInterceptorTest {
 
     @SegmentStoragePoint
@@ -73,14 +81,14 @@ public class SofaRpcConsumerInterceptorTest {
     @Mock
     private ConsumerInvoker invoker;
 
-    private SofaRequest           sofaRequest = PowerMockito.mock(SofaRequest.class);
+    private SofaRequest sofaRequest = PowerMockito.mock(SofaRequest.class);
     @Mock
     private MethodInterceptResult methodInterceptResult;
 
     private SofaResponse sofaResponse = PowerMockito.mock(SofaResponse.class);
 
     private Object[] allArguments;
-    private Class[]  argumentTypes;
+    private Class[] argumentTypes;
 
     @Before
     public void setUp() throws Exception {
@@ -100,7 +108,7 @@ public class SofaRpcConsumerInterceptorTest {
         when(rpcContext.getProviderInfo()).thenReturn(providerInfo);
         allArguments = new Object[] {sofaRequest};
         argumentTypes = new Class[] {sofaRequest.getClass()};
-        Config.Agent.APPLICATION_CODE = "SOFARPC-TestCases-APP";
+        Config.Agent.SERVICE_NAME = "SOFARPC-TestCases-APP";
     }
 
     @Test
@@ -138,8 +146,7 @@ public class SofaRpcConsumerInterceptorTest {
         assertConsumerTraceSegmentInErrorCase(traceSegment);
     }
 
-    private void assertConsumerTraceSegmentInErrorCase(
-            TraceSegment traceSegment) {
+    private void assertConsumerTraceSegmentInErrorCase(TraceSegment traceSegment) {
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
         assertConsumerSpan(spans.get(0));
@@ -161,11 +168,12 @@ public class SofaRpcConsumerInterceptorTest {
     }
 
     private void assertCommonsAttribute(AbstractTracingSpan span) {
-        List<KeyValuePair> tags = SpanHelper.getTags(span);
+        List<TagValuePair> tags = SpanHelper.getTags(span);
         assertThat(tags.size(), is(1));
         assertThat(SpanHelper.getLayer(span), CoreMatchers.is(SpanLayer.RPC_FRAMEWORK));
         assertThat(SpanHelper.getComponentId(span), is(43));
-        assertThat(tags.get(0).getValue(), is("bolt://127.0.0.1:12200/org.apache.skywalking.apm.test.TestSofaRpcService.test(String)"));
+        assertThat(tags.get(0)
+                       .getValue(), is("bolt://127.0.0.1:12200/org.apache.skywalking.apm.test.TestSofaRpcService.test(String)"));
         assertThat(span.getOperationName(), is("org.apache.skywalking.apm.test.TestSofaRpcService.test(String)"));
     }
 }

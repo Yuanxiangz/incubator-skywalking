@@ -16,52 +16,32 @@
  *
  */
 
-
 package org.apache.skywalking.apm.agent.core.context.trace;
 
-import org.apache.skywalking.apm.agent.core.dictionary.DictionaryUtil;
-import org.apache.skywalking.apm.network.proto.SpanObject;
+import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
+import org.apache.skywalking.apm.agent.core.context.TracingContext;
+import org.apache.skywalking.apm.agent.core.context.tag.AbstractTag;
 import org.apache.skywalking.apm.network.trace.component.Component;
 
 /**
- * The <code>ExitSpan</code> represents a service consumer point, such as Feign, Okhttp client for a Http service.
- *
- * It is an exit point or a leaf span(our old name) of trace tree.
- * In a single rpc call, because of a combination of discovery libs, there maybe contain multi-layer exit point:
- *
+ * The <code>ExitSpan</code> represents a service consumer point, such as Feign, Okhttp client for an Http service.
+ * <p>
+ * It is an exit point or a leaf span(our old name) of trace tree. In a single rpc call, because of a combination of
+ * discovery libs, there maybe contain multi-layer exit point:
+ * <p>
  * The <code>ExitSpan</code> only presents the first one.
- *
- * Such as: Dubbox - Apache Httpcomponent - ...(Remote)
- * The <code>ExitSpan</code> represents the Dubbox span, and ignore the httpcomponent span's info.
- *
- * @author wusheng
+ * <p>
+ * Such as: Dubbox - Apache Httpcomponent - ...(Remote) The <code>ExitSpan</code> represents the Dubbox span, and ignore
+ * the httpcomponent span's info.
  */
-public class ExitSpan extends StackBasedTracingSpan implements WithPeerInfo {
-    private String peer;
-    private int peerId;
+public class ExitSpan extends StackBasedTracingSpan implements ExitTypeSpan {
 
-    public ExitSpan(int spanId, int parentSpanId, String operationName, String peer) {
-        super(spanId, parentSpanId, operationName);
-        this.peer = peer;
-        this.peerId = DictionaryUtil.nullValue();
+    public ExitSpan(int spanId, int parentSpanId, String operationName, String peer, TracingContext owner) {
+        super(spanId, parentSpanId, operationName, peer, owner);
     }
 
-    public ExitSpan(int spanId, int parentSpanId, int operationId, int peerId) {
-        super(spanId, parentSpanId, operationId);
-        this.peer = null;
-        this.peerId = peerId;
-    }
-
-    public ExitSpan(int spanId, int parentSpanId, int operationId, String peer) {
-        super(spanId, parentSpanId, operationId);
-        this.peer = peer;
-        this.peerId = DictionaryUtil.nullValue();
-    }
-
-    public ExitSpan(int spanId, int parentSpanId, String operationName, int peerId) {
-        super(spanId, parentSpanId, operationName);
-        this.peer = null;
-        this.peerId = peerId;
+    public ExitSpan(int spanId, int parentSpanId, String operationName, TracingContext owner) {
+        super(spanId, parentSpanId, operationName, owner);
     }
 
     /**
@@ -77,15 +57,23 @@ public class ExitSpan extends StackBasedTracingSpan implements WithPeerInfo {
 
     @Override
     public ExitSpan tag(String key, String value) {
-        if (stackDepth == 1) {
+        if (stackDepth == 1 || isInAsyncMode) {
             super.tag(key, value);
         }
         return this;
     }
 
     @Override
+    public AbstractTracingSpan tag(AbstractTag<?> tag, String value) {
+        if (stackDepth == 1 || tag.isCanOverwrite() || isInAsyncMode) {
+            super.tag(tag, value);
+        }
+        return this;
+    }
+
+    @Override
     public AbstractTracingSpan setLayer(SpanLayer layer) {
-        if (stackDepth == 1) {
+        if (stackDepth == 1 || isInAsyncMode) {
             return super.setLayer(layer);
         } else {
             return this;
@@ -94,7 +82,7 @@ public class ExitSpan extends StackBasedTracingSpan implements WithPeerInfo {
 
     @Override
     public AbstractTracingSpan setComponent(Component component) {
-        if (stackDepth == 1) {
+        if (stackDepth == 1 || isInAsyncMode) {
             return super.setComponent(component);
         } else {
             return this;
@@ -102,37 +90,14 @@ public class ExitSpan extends StackBasedTracingSpan implements WithPeerInfo {
     }
 
     @Override
-    public AbstractTracingSpan setComponent(String componentName) {
-        if (stackDepth == 1) {
-            return super.setComponent(componentName);
-        } else {
-            return this;
-        }
-    }
-
-    @Override
     public ExitSpan log(Throwable t) {
-        if (stackDepth == 1) {
-            super.log(t);
-        }
+        super.log(t);
         return this;
-    }
-
-    @Override public SpanObject.Builder transform() {
-        SpanObject.Builder spanBuilder = super.transform();
-        if (peerId != DictionaryUtil.nullValue()) {
-            spanBuilder.setPeerId(peerId);
-        } else {
-            if (peer != null) {
-                spanBuilder.setPeer(peer);
-            }
-        }
-        return spanBuilder;
     }
 
     @Override
     public AbstractTracingSpan setOperationName(String operationName) {
-        if (stackDepth == 1) {
+        if (stackDepth == 1 || isInAsyncMode) {
             return super.setOperationName(operationName);
         } else {
             return this;
@@ -140,29 +105,23 @@ public class ExitSpan extends StackBasedTracingSpan implements WithPeerInfo {
     }
 
     @Override
-    public AbstractTracingSpan setOperationId(int operationId) {
-        if (stackDepth == 1) {
-            return super.setOperationId(operationId);
-        } else {
-            return this;
-        }
-    }
-
-    @Override
-    public int getPeerId() {
-        return peerId;
-    }
-
-    @Override
     public String getPeer() {
         return peer;
     }
 
-    @Override public boolean isEntry() {
+    @Override
+    public ExitSpan inject(final ContextCarrier carrier) {
+        this.owner.inject(this, carrier);
+        return this;
+    }
+
+    @Override
+    public boolean isEntry() {
         return false;
     }
 
-    @Override public boolean isExit() {
+    @Override
+    public boolean isExit() {
         return true;
     }
 }

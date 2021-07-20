@@ -32,26 +32,47 @@ public class HystrixPluginsInstrumentation extends ClassInstanceMethodsEnhancePl
 
     public static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.hystrix.v1.HystrixPluginsInterceptor";
     public static final String ENHANCE_METHOD = "getCommandExecutionHook";
+    public static final String GET_CONCURRENCY_STRATEGY_METHOD = "getConcurrencyStrategy";
+    public static final String GET_CONCURRENCY_STRATEGY_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.hystrix.v1.HystrixConcurrencyStrategyInterceptor";
     public static final String ENHANCE_CLASS = "com.netflix.hystrix.strategy.HystrixPlugins";
 
     @Override
-    protected ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
+    public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
         return new ConstructorInterceptPoint[0];
     }
 
     @Override
-    protected InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
+    public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
         return new InstanceMethodsInterceptPoint[] {
             new InstanceMethodsInterceptPoint() {
-                @Override public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                @Override
+                public ElementMatcher<MethodDescription> getMethodsMatcher() {
                     return named(ENHANCE_METHOD);
                 }
 
-                @Override public String getMethodsInterceptor() {
+                @Override
+                public String getMethodsInterceptor() {
                     return INTERCEPT_CLASS;
                 }
 
-                @Override public boolean isOverrideArgs() {
+                @Override
+                public boolean isOverrideArgs() {
+                    return false;
+                }
+            },
+            new InstanceMethodsInterceptPoint() {
+                @Override
+                public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                    return named(GET_CONCURRENCY_STRATEGY_METHOD);
+                }
+
+                @Override
+                public String getMethodsInterceptor() {
+                    return GET_CONCURRENCY_STRATEGY_INTERCEPT_CLASS;
+                }
+
+                @Override
+                public boolean isOverrideArgs() {
                     return false;
                 }
             }

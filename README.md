@@ -1,86 +1,105 @@
 Apache SkyWalking
 ==========
 
-<img src="https://skywalkingtest.github.io/page-resources/3.0/skywalking.png" alt="Sky Walking logo" height="90px" align="right" />
+<img src="http://skywalking.apache.org/assets/logo.svg" alt="Sky Walking logo" height="90px" align="right" />
 
-**SkyWalking**: APM (application performance monitor) tool for distributed systems, especially designed for 
-microservices, cloud native and container-based (Docker, Kubernetes, Mesos) architectures.
+**SkyWalking**: an APM(application performance monitor) system, especially designed for
+microservices, cloud native and container-based architectures.
 
-[![GitHub stars](https://img.shields.io/github/stars/apache/incubator-skywalking.svg?style=for-the-badge&label=Stars&logo=github)](https://github.com/apache/incubator-skywalking)
+[![GitHub stars](https://img.shields.io/github/stars/apache/skywalking.svg?style=for-the-badge&label=Stars&logo=github)](https://github.com/apache/skywalking)
 [![Twitter Follow](https://img.shields.io/twitter/follow/asfskywalking.svg?style=for-the-badge&label=Follow&logo=twitter)](https://twitter.com/AsfSkyWalking)
 
-
-[![Maven Central](https://img.shields.io/maven-central/v/org.apache.skywalking/apache-skywalking-apm-incubating.svg)](http://skywalking.apache.org/downloads/)
-[![Build Status](https://travis-ci.org/apache/incubator-skywalking.svg?branch=master)](https://travis-ci.org/apache/incubator-skywalking)
-[![Join the chat at https://gitter.im/sky-walking/Lobby](https://badges.gitter.im/openskywalking/Lobby.svg)](https://gitter.im/openskywalking/Lobby)
-[![OpenTracing-1.x Badge](https://img.shields.io/badge/OpenTracing--1.x-enabled-blue.svg)](http://opentracing.io)
+[![Maven Central](https://img.shields.io/maven-central/v/org.apache.skywalking/apache-skywalking-apm.svg)](http://skywalking.apache.org/downloads/)
+[![CI/IT Tests](https://github.com/apache/skywalking/workflows/CI%20AND%20IT/badge.svg?branch=master)](https://github.com/apache/skywalking/actions?query=workflow%3ACI%2BAND%2BIT+event%3Aschedule+branch%3Amaster)
+[![E2E Tests](https://github.com/apache/skywalking/workflows/E2E/badge.svg?branch=master)](https://github.com/apache/skywalking/actions?query=branch%3Amaster+event%3Aschedule+workflow%3AE2E)
 
 # Abstract
-**SkyWalking** started as a distributed tracing system in 2015. From 5.x, it evolved to the fully functional [Application Performance Management](https://en.wikipedia.org/wiki/Application_performance_management) 
-system. It is used for tracing, monitoring, diagnose distributed systems, especially based on microservices, cloud native and container,
-including:
-- Distributed tracing and context propagation
-- Application, instance, service metrics analysis
-- Root cause analysis
-- Application topology map analysis
-- Application and service dependency analysis
-- Slow service detected
+**SkyWalking** is an open source APM system, including monitoring, tracing, diagnosing capabilities for distributed system
+in Cloud Native architecture.
+The core features are following.
+
+- Service, service instance, endpoint metrics analysis
+- Root cause analysis. Profile the code on the runtime
+- Service topology map analysis
+- Service, service instance and endpoint dependency analysis
+- Slow services and endpoints detected
 - Performance optimization
+- Distributed tracing and context propagation
+- Database access metrics. Detect slow database access statements(including SQL statements)
+- Alarm
+- Browser performance monitoring
+- Infrastructure(VM, network, disk etc.) monitoring
+- Collaboration across metrics, traces, and logs
 
-# Core features
-- Multiple languages instrumentation agent or libraries 
-  - Native Java auto instrumentation agent. Trace and monitor your cluster without changing any source codes
-  - Community instrumentation agent or libraries
-    * [.NET Core](https://github.com/OpenSkywalking/skywalking-netcore) 
-    * [Node.js](https://github.com/OpenSkywalking/skywalking-nodejs)
-- Multiple storage backends: ElasticSearch, H2
-- [OpenTracing](http://opentracing.io/) compatible
-  - Native Java auto instrumentation agent could work with OpenTracing APIs in the same context
-- Lightweight and powerful backend aggregation and analysis capabilities
-- Modern and cool Web UI
-- Log integration
-- Alarm for slow or unstable(low SLA) application, instance and service 
-- [**Incubating**] Support accepting other tracer data formats.
-  - Zipkin JSON, Thrift, Protobuf v1 and v2 formats, powered by [OpenZipkin](https://github.com/openzipkin/zipkin) libs
-  - Jaeger in [Zipkin Thrift or JSON v1/v2 formats](https://github.com/jaegertracing/jaeger#backwards-compatibility-with-zipkin)
-  
-# Announcement
-After SkyWalking 5.0.0-beta2 released, all core features have been provided. For 5 series, we are trying to make them stable from now. At the same time, we have already begun our works for 6 series, in branch `6.0`. It will be a long way to have the first alpha release for it. So if you want to take part in the challengeable works, welcome, but don't consider to use that. Please read the [6.0 documents](https://github.com/apache/incubator-skywalking/blob/6.0/docs/README.md) first.
+<img src="https://skywalking.apache.org/images/SkyWalking_Architecture_20210424.png?t=20210424"/>
 
-# Document
-- [Documents in English](docs/README.md)
-- [Documents in Chinese](docs/README_ZH.md)
+SkyWalking supports to collect telemetry (metrics, traces, and logs) data from multiple sources
+and multiple formats,
+including
+1. Java, .NET Core, NodeJS, PHP, and Python auto-instrument agents.
+1. Go and C++ SDKs.
+1. LUA agent especially for Nginx, OpenResty and Apache APISIX.
+1. Browser agent.
+1. Service Mesh Observability. Control panel and data panel. 
+1. Metrics system, including Prometheus, OpenTelemetry, Spring Sleuth(Micrometer), Zabbix.
+1. Logs.
+1. Zipkin v1/v2 trace.(No Analysis)
 
-# 5.x Architecture
-<img src="https://skywalkingtest.github.io/page-resources/5.0/architecture.png"/>
+SkyWalking OAP is using the STAM(Streaming Topology Analysis Method) to analysis topology in the tracing based agent scenario 
+for better performance. Read [the paper of STAM](https://wu-sheng.github.io/STAM/) for more details.
 
-# Code of conduct
-This project adheres to the Contributor Covenant [code of conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to wusheng@apache.org.
+# Documentation
+- [Official documentation](https://skywalking.apache.org/docs/)
+- [The paper of STAM](https://wu-sheng.github.io/STAM/), Streaming Topology Analysis Method.
+- [Blog](https://skywalking.apache.org/blog/2020-04-13-apache-skywalking-profiling/) about Use Profiling to Fix the Blind Spot of Distributed Tracing
+- [Blog](https://skywalking.apache.org/blog/2020-12-03-obs-service-mesh-with-sw-and-als/) about observing Istio + Envoy service mesh with ALS solution.
+- [Blog](https://skywalking.apache.org/blog/obs-service-mesh-vm-with-sw-and-als/) about observing Istio + Envoy service mesh with ALS Metadata-Exchange mechanism (in VMs and / or Kubernetes).
 
-# Live Demo
-- Host in Beijing. [goto](http://49.4.12.44:8080/)
-  - Username: admin
-  - Password: admin
+NOTICE, SkyWalking 8.0+ uses [v3 protocols](docs/en/protocols/README.md). They are incompatible with previous releases.
 
-# Screenshot
-<img src="https://skywalkingtest.github.io/page-resources/5.0.0-beta2/Dashboard.png"/>
-
-
-- [See all screenshots](/docs/Screenshots.md)
+# Downloads
+Please head to the [releases page](https://skywalking.apache.org/downloads/) to download a release of Apache SkyWalking.
 
 # Compiling project
-Follow this [document](https://github.com/apache/incubator-skywalking/blob/master/docs/en/How-to-build.md).
+Follow this [document](docs/en/guides/How-to-build.md).
+
+# Code of conduct
+This project adheres to the Contributor Covenant [code of conduct](https://www.apache.org/foundation/policies/conduct). By participating, you are expected to uphold this code.
+Please follow the [REPORTING GUIDELINES](https://www.apache.org/foundation/policies/conduct#reporting-guidelines) to report unacceptable behavior.
+
+# Live Demo
+Find the [demo](https://skywalking.apache.org/#demo) and [screenshots](https://skywalking.apache.org/#arch) on our website.
+
+**Video on youtube.com**
+
+[![RocketBot UI](http://img.youtube.com/vi/mfKaToAKl7k/0.jpg)](http://www.youtube.com/watch?v=mfKaToAKl7k)
 
 # Contact Us
-* Submit an issue
-* Mail list: dev@skywalking.apache.org
-* [Gitter](https://gitter.im/openskywalking/Lobby)
-* QQ Group: 392443393
+* Mail list: **dev@skywalking.apache.org**. Mail to `dev-subscribe@skywalking.apache.org`, follow the reply to subscribe the mail list.
+* Join `skywalking` channel at [Apache Slack](http://s.apache.org/slack-invite). If the link is not working, find the latest one at [Apache INFRA WIKI](https://cwiki.apache.org/confluence/display/INFRA/Slack+Guest+Invites).
+* Twitter, [ASFSkyWalking](https://twitter.com/ASFSkyWalking)
+* QQ Group: 901167865(Recommended), 392443393
+* [bilibili B站 视频](https://space.bilibili.com/390683219)
 
-# Users
-<img src="https://skywalkingtest.github.io/page-resources/users/users-2018-06-07.png"/>
+# Our Users
+Hundreds of companies and organizations use SkyWalking for research, production, and commercial product.
+Visit our [website](http://skywalking.apache.org/#users) to find the user page.
 
-[Submit new user case to us.](https://github.com/apache/incubator-skywalking/issues/443)
+
+# Landscapes
+
+<p align="center">
+<br/><br/>
+<img src="https://landscape.cncf.io/images/left-logo.svg" width="150"/>&nbsp;&nbsp;<img src="https://landscape.cncf.io/images/right-logo.svg" width="200"/>
+<br/><br/>
+SkyWalking enriches the <a href="https://landscape.cncf.io/landscape=observability-and-analysis&license=apache-license-2-0">CNCF CLOUD NATIVE Landscape.</a>
+
+</p>
+
+<p align="center">
+<a href="https://openapm.io"><img src="https://openapm.io/static/media/openapm_logo.svg" width="100"/></a>
+  <br/>Our project enriches the <a href="https://openapm.io">OpenAPM Landscape!</a>
+</p>
 
 # License
-[Apache 2.0 License.](/LICENSE)
+[Apache 2.0 License.](LICENSE)

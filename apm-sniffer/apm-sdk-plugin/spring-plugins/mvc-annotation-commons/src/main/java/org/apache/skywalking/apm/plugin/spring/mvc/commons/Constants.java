@@ -20,8 +20,6 @@ package org.apache.skywalking.apm.plugin.spring.mvc.commons;
 
 /**
  * Interceptor class name constant variables
- *
- * @author zhangxin
  */
 public class Constants {
     public static final String GET_BEAN_INTERCEPTOR = "org.apache.skywalking.apm.plugin.spring.mvc.commons.interceptor.GetBeanInterceptor";
@@ -32,9 +30,15 @@ public class Constants {
 
     public static final String REST_MAPPING_METHOD_INTERCEPTOR = "org.apache.skywalking.apm.plugin.spring.mvc.commons.interceptor.RestMappingMethodInterceptor";
 
-    public static final String HYSTRIX_COMMAND_ANNOTATION = "com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand";
+    public static final String REQUEST_KEY_IN_RUNTIME_CONTEXT = "SW_REQUEST";
 
-    public static final String ISOLATE_STRATEGY_KEY_IN_RUNNING_CONTEXT = "ISOLATE_STRATEGY";
+    public static final String RESPONSE_KEY_IN_RUNTIME_CONTEXT = "SW_RESPONSE";
+
+    public static final String REACTIVE_ASYNC_SPAN_IN_RUNTIME_CONTEXT = "SW_REACTIVE_RESPONSE_ASYNC_SPAN";
 
     public static final String FORWARD_REQUEST_FLAG = "SW_FORWARD_REQUEST_FLAG";
+
+    public static final String WEBFLUX_REQUEST_KEY = "SW_WEBFLUX_REQUEST_KEY";
+
+    public static final String CONTROLLER_METHOD_STACK_DEPTH = "SW_CONTROLLER_METHOD_STACK_DEPTH";
 }

@@ -19,7 +19,7 @@
 package org.apache.skywalking.apm.plugin.jetty.v9.server;
 
 import java.util.List;
-import org.apache.skywalking.apm.agent.core.context.SW3CarrierItem;
+import org.apache.skywalking.apm.agent.core.context.SW8CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.LogDataEntity;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
@@ -108,7 +108,8 @@ public class HandleInterceptorTest {
 
     @Test
     public void testWithSerializedContextData() throws Throwable {
-        when(request.getHeader(SW3CarrierItem.HEADER_NAME)).thenReturn("1.234.111|3|1|1|#192.168.1.8:18002|#/portal/|#/testEntrySpan|#AQA*#AQA*Et0We0tQNQA*");
+        when(request.getHeader(
+            SW8CarrierItem.HEADER_NAME)).thenReturn("1-My40LjU=-MS4yLjM=-3-c2VydmljZQ==-aW5zdGFuY2U=-L2FwcA==-MTI3LjAuMC4xOjgwODA=");
 
         jettyInvokeInterceptor.beforeMethod(service, null, arguments, argumentType, methodInterceptResult);
         jettyInvokeInterceptor.afterMethod(service, null, arguments, argumentType, null);
@@ -118,7 +119,7 @@ public class HandleInterceptorTest {
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
 
         assertHttpSpan(spans.get(0));
-        assertTraceSegmentRef(traceSegment.getRefs().get(0));
+        assertTraceSegmentRef(traceSegment.getRef());
     }
 
     @Test
@@ -138,9 +139,9 @@ public class HandleInterceptorTest {
     }
 
     private void assertTraceSegmentRef(TraceSegmentRef ref) {
-        assertThat(SegmentRefHelper.getEntryApplicationInstanceId(ref), is(1));
+        assertThat(SegmentRefHelper.getParentServiceInstance(ref), is("instance"));
         assertThat(SegmentRefHelper.getSpanId(ref), is(3));
-        assertThat(SegmentRefHelper.getTraceSegmentId(ref).toString(), is("1.234.111"));
+        assertThat(SegmentRefHelper.getTraceSegmentId(ref).toString(), is("3.4.5"));
     }
 
     private void assertHttpSpan(AbstractTracingSpan span) {
@@ -153,17 +154,18 @@ public class HandleInterceptorTest {
 
     public static class MockService extends HttpChannel implements EnhancedInstance {
 
-        public MockService(Connector connector,
-            HttpConfiguration configuration, EndPoint endPoint,
+        public MockService(Connector connector, HttpConfiguration configuration, EndPoint endPoint,
             HttpTransport transport, HttpInput input) {
             super(connector, configuration, endPoint, transport, input);
         }
 
-        @Override public Object getSkyWalkingDynamicField() {
+        @Override
+        public Object getSkyWalkingDynamicField() {
             return null;
         }
 
-        @Override public void setSkyWalkingDynamicField(Object value) {
+        @Override
+        public void setSkyWalkingDynamicField(Object value) {
 
         }
     }

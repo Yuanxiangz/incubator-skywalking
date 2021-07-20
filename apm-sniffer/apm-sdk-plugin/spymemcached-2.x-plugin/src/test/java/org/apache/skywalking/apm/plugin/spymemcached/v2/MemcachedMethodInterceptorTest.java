@@ -16,21 +16,23 @@
  *
  */
 
-
 package org.apache.skywalking.apm.plugin.spymemcached.v2;
 
 import java.lang.reflect.Method;
 import java.util.List;
 import net.spy.memcached.MemcachedClient;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
+import org.apache.skywalking.apm.agent.core.context.trace.LogDataEntity;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
-import org.apache.skywalking.apm.agent.core.context.util.KeyValuePair;
+import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
+import org.apache.skywalking.apm.agent.core.context.util.TagValuePair;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.test.helper.SegmentHelper;
 import org.apache.skywalking.apm.agent.test.helper.SpanHelper;
 import org.apache.skywalking.apm.agent.test.tools.AgentServiceRule;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStorage;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStoragePoint;
+import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
@@ -41,9 +43,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-import org.apache.skywalking.apm.agent.core.context.trace.LogDataEntity;
-import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
-import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
 
 import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.CoreMatchers.is;
@@ -67,8 +66,14 @@ public class MemcachedMethodInterceptorTest {
 
     @Before
     public void setUp() throws Exception {
-        allArgument = new Object[] {"OperationKey", "OperationValue"};
-        argumentType = new Class[] {String.class, String.class};
+        allArgument = new Object[] {
+            "OperationKey",
+            "OperationValue"
+        };
+        argumentType = new Class[] {
+            String.class,
+            String.class
+        };
 
         interceptor = new MemcachedMethodInterceptor();
         when(enhancedInstance.getSkyWalkingDynamicField()).thenReturn("127.0.0.1:11211");
@@ -104,7 +109,9 @@ public class MemcachedMethodInterceptorTest {
         LogDataEntity logData = logDataEntities.get(0);
         Assert.assertThat(logData.getLogs().size(), is(4));
         Assert.assertThat(logData.getLogs().get(0).getValue(), CoreMatchers.<Object>is("error"));
-        Assert.assertThat(logData.getLogs().get(1).getValue(), CoreMatchers.<Object>is(RuntimeException.class.getName()));
+        Assert.assertThat(logData.getLogs()
+                                 .get(1)
+                                 .getValue(), CoreMatchers.<Object>is(RuntimeException.class.getName()));
         Assert.assertNull(logData.getLogs().get(2).getValue());
         assertNotNull(logData.getLogs().get(3).getValue());
     }
@@ -113,7 +120,7 @@ public class MemcachedMethodInterceptorTest {
         assertThat(span.getOperationName(), is("SpyMemcached/set"));
         assertThat(span.isExit(), is(true));
         assertThat(SpanHelper.getComponentId(span), is(35));
-        List<KeyValuePair> tags = SpanHelper.getTags(span);
+        List<TagValuePair> tags = SpanHelper.getTags(span);
         assertThat(tags.get(0).getValue(), is("Spymemcached"));
         assertThat(tags.get(1).getValue(), is("set OperationKey"));
         MatcherAssert.assertThat(SpanHelper.getLayer(span), CoreMatchers.is(SpanLayer.CACHE));

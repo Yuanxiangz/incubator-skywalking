@@ -2,165 +2,134 @@ Changes by Version
 ==================
 Release Notes.
 
-5.0.0-beta2
+8.7.0
 ------------------
 
-#### UI -> Collector GraphQL query protocol
-  - Add order and status in trace query. 
+#### Project
 
-#### Agent Changes
-  - Add SOFA plugin.
-  - Add witness class for Kafka plugin.
-  - Add RuntimeContext in Context.
-  - Fix RuntimeContext fail in Tomcat plugin. 
-  - Fix incompatible for `getPropertyDescriptors` in Spring core. 
-  - Fix spymemcached plugin bug.
-  - Fix database URL parser bug.
-  - Fix `StringIndexOutOfBoundsException` when mysql jdbc url without databaseName。
-  - Fix duplicate slash in Spring MVC plugin bug.
-  - Fix namespace bug.
-  - Fix NPE in Okhttp plugin when connect failed.
-  - FIx `MalformedURLException` in httpClientComponent plugin. 
-  - Remove unused dependencies in Dubbo plugin.
-  - Remove gRPC timeout to avoid out of memory leak.
-  - Rewrite Async http client plugin.
-  - [Incubating] Add trace custom ignore optional plugin. 
+* Extract dependency management to a bom.
+* Add JDK 16 to test matrix.
+* DataCarrier consumer add a new event notification, call `nothingToConsume` method if the queue has no element to
+  consume.
+* Build and push snapshot Docker images to GitHub Container Registry, this is only for people who want to help to test
+  the master branch codes, please don't use in production environments.
+* Adjust the project structure of the alarm module for convenient the user to add their own implementation.
 
-#### Collector Changes
-  - Topology query optimization for more than 100 apps.
-  - Error rate alarm is not triggered.
-  - Tolerate unsupported segments.
-  - Support Integer Array, Long Array, String Array, Double Array in streaming data model.
-  - Support multiple entry span and multiple service name in one segment durtaion record.
-  - Use BulkProcessor to control the linear writing of data by multiple threads.
-  - Determine the log is enabled for the DEBUG level before printing message.
-  - Add `static` modifier to Logger. 
-  - Add AspNet component.
-  - Filter inactive service in query.
-  - Support to query service based on Application.
-  - Fix `RemoteDataMappingIdNotFoundException`
-  - Exclude component-libaries.xml file in collector-*.jar, make sure it is in `/conf` only. 
-  - Separate a single TTL in minute to in minute, hour, day, month metric and trace.
-  - Add order and status in trace query. 
-  - Add folder lock to buffer folder.
-  - Modify operationName search from `match` to `match_phrase`.
-  - [Incubating] Add Zipkin span receiver. Support analysis Zipkin v1/v2 formats.
-  - [Incubating] Support sharding-sphere as storage implementor.
-  
-#### UI Changes
-  - Support login and access control.
-  - Add new webapp.yml configuration file.
-  - Modify webapp startup script.
-  - Link to trace query from Thermodynamic graph
-  - Add application selector in service view.
-  - Add order and status in trace query.
-  
-#### Documents
-  - Add architecture design doc.
-  - Reformat deploy document. 
-  - Adjust Tomcat deploy document.
-  - Remove all Apache licenses files in dist release packages.
-  - Update user cases.
-  - Update UI licenses.
-  - Add incubating sections in doc.
+#### Java Agent
 
-[Issues and Pull requests](https://github.com/apache/incubator-skywalking/milestone/28)
-  
-5.0.0-beta
+* Supports modifying span attributes in async mode.
+* Agent supports the collection of JVM arguments and jar dependency information.
+* [Temporary] Support authentication for log report channel. This feature and grpc channel is going to be removed after
+  Satellite 0.2.0 release.
+* Remove deprecated gRPC method, `io.grpc.ManagedChannelBuilder#nameResolverFactory`.
+  See [gRPC-java 7133](https://github.com/grpc/grpc-java/issues/7133) for more details.
+* Add `Neo4j-4.x` plugin.
+* Correct `profile.duration` to `profile.max_duration` in the default `agent.config` file.
+* Fix the response time of gRPC.
+* Support parameter collection for SqlServer.
+* Add `ShardingSphere-5.0.0-beta` plugin.
+* Fix some method exception error.
+* Fix async finish repeatedly in `spring-webflux-5.x-webclient` plugin.
+* Add agent plugin to support Sentinel.
+* Move `ehcache-2.x` plugin as an optional plugin.
+* Support `guava-cache` plugin.
+* Enhance the compatibility of `mysql-8.x-plugin` plugin.
+* Support Kafka SASL login module.
+* Fix gateway plugin async finish repeatedly when fallback url configured.
+* Chore: polish methods naming for `Spring-Kafka` plugins.
+* Remove plugins for ShardingSphere legacy version.
+
+#### OAP-Backend
+
+* Disable Spring sleuth meter analyzer by default.
+* Only count 5xx as error in Envoy ALS receiver.
+* Upgrade apollo core caused by CVE-2020-15170.
+* Upgrade kubernetes client caused by CVE-2020-28052.
+* Upgrade Elasticsearch 7 client caused by CVE-2020-7014.
+* Upgrade jackson related libs caused by CVE-2018-11307, CVE-2018-14718 ~ CVE-2018-14721, CVE-2018-19360 ~
+  CVE-2018-19362, CVE-2019-14379, CVE-2019-14540, CVE-2019-14892, CVE-2019-14893, CVE-2019-16335, CVE-2019-16942,
+  CVE-2019-16943, CVE-2019-17267, CVE-2019-17531, CVE-2019-20330, CVE-2020-8840, CVE-2020-9546, CVE-2020-9547,
+  CVE-2020-9548, CVE-2018-12022, CVE-2018-12023, CVE-2019-12086, CVE-2019-14439, CVE-2020-10672, CVE-2020-10673,
+  CVE-2020-10968, CVE-2020-10969, CVE-2020-11111, CVE-2020-11112, CVE-2020-11113, CVE-2020-11619, CVE-2020-11620,
+  CVE-2020-14060, CVE-2020-14061, CVE-2020-14062, CVE-2020-14195, CVE-2020-24616, CVE-2020-24750, CVE-2020-25649,
+  CVE-2020-35490, CVE-2020-35491, CVE-2020-35728 and CVE-2020-36179 ~ CVE-2020-36190.
+* Exclude log4j 1.x caused by CVE-2019-17571.
+* Upgrade log4j 2.x caused by CVE-2020-9488.
+* Upgrade nacos libs caused by CVE-2021-29441 and CVE-2021-29442.
+* Upgrade netty caused by CVE-2019-20444, CVE-2019-20445, CVE-2019-16869, CVE-2020-11612, CVE-2021-21290, CVE-2021-21295
+  and CVE-2021-21409.
+* Upgrade consul client caused by CVE-2018-1000844, CVE-2018-1000850.
+* Upgrade zookeeper caused by CVE-2019-0201, zookeeper cluster coordinator plugin now requires zookeeper server 3.5+.
+* Upgrade snake yaml caused by CVE-2017-18640.
+* Upgrade embed tomcat caused by CVE-2020-13935.
+* Upgrade commons-lang3 to avoid potential NPE in some JDK versions.
+* OAL supports generating metrics from events.
+* Support endpoint name grouping by OpenAPI definitions.
+* Concurrent create PrepareRequest when persist Metrics
+* Fix CounterWindow increase computing issue.
+* Performance: optimize Envoy ALS analyzer performance in high traffic load scenario (reduce ~1cpu in ~10k RPS).
+* Performance: trim useless metadata fields in Envoy ALS metadata to improve performance.
+* Fix: slowDBAccessThreshold dynamic config error when not configured.
+* Performance: cache regex pattern and result, optimize string concatenation in Envy ALS analyzer.
+* Performance: cache metrics id and entity id in `Metrics` and `ISource`.
+* Performance: enhance persistent session mechanism, about differentiating cache timeout for different dimensionality
+  metrics. The timeout of the cache for minute and hour level metrics has been prolonged to ~5 min.
+* Performance: Add L1 aggregation flush period, which reduce the CPU load and help young GC.
+* Support connectTimeout and socketTimeout settings for ElasticSearch6 and ElasticSearch7 storages.
+* Re-implement storage session mechanism, cached metrics are removed only according to their last access timestamp,
+  rather than first time. This makes sure hot data never gets removed unexpectedly.
+* Support session expired threshold configurable.
+* Fix InfluxDB storage-plugin Metrics#multiGet issue.
+* Replace zuul proxy with spring cloud gateway 2.x. in webapp module.
+* Upgrade etcd cluster coordinator and dynamic configuration to v3.x.
+* Configuration: Allow configuring server maximum request header size.
+* Add thread state metric and class loaded info metric to JVMMetric.
+* Performance: compile LAL DSL statically and run with type checked.
+* Add pagination to event query protocol.
+* Performance: optimize Envoy error logs persistence performance.
+* Support envoy `cluster manager` metrics.
+* Performance: remove the synchronous persistence mechanism from batch ElasticSearch DAO. Because the current enhanced
+  persistent session mechanism, don't require the data queryable immediately after the insert and update anymore.
+* Performance: share `flushInterval` setting for both metrics and record data, due
+  to `synchronous persistence mechanism` removed. Record flush interval used to be hardcoded as 10s.
+* Remove `syncBulkActions` in ElasticSearch storage option.
+* Increase the default bulkActions(env, SW_STORAGE_ES_BULK_ACTIONS) to 5000(from 1000).
+* Increase the flush interval of ElasticSearch indices to 15s(from 10s)
+* Provide distinct for elements of metadata lists. Due to the more aggressive asynchronous flush, metadata lists have
+  more chances including duplicate elements. Don't need this as indicate anymore.
+* Reduce the flush period of hour and day level metrics, only run in 4 times of regular persistent period. This means
+  default flush period of hour and day level metrics are 25s * 4.
+* Performance: optimize IDs read of ElasticSearch storage options(6 and 7). Use the physical index rather than template
+  alias name.
+* Adjust index refresh period as INT(flushInterval * 2/3), it used to be as same as bulk flush period. At the edge case,
+  in low traffic(traffic < bulkActions in the whole period), there is a possible case, 2 period bulks are included in
+  one index refresh rebuild operation, which could cause version conflicts. And this case can't be fixed
+  through `core/persistentPeriod` as the bulk fresh is not controlled by the persistent timer anymore.
+* The `core/maxSyncOperationNum` setting(added in 8.5.0) is removed due to metrics persistence is fully asynchronous.
+* The `core/syncThreads` setting(added in 8.5.0) is removed due to metrics persistence is fully asynchronous.
+* Optimization: Concurrency mode of execution stage for metrics is removed(added in 8.5.0). Only concurrency of prepare
+  stage is meaningful and kept.
+* Fix `-meters` metrics topic isn't created with namespace issue
+* Enhance persistent session timeout mechanism. Because the enhanced session could cache the metadata metrics forever,
+  new timeout mechanism is designed for avoiding this specific case.
+* Fix Kafka transport topics are created duplicated with and without namespace issue
+
+#### UI
+
+* Fix the date component for log conditions.
+* Fix selector keys for duplicate options.
+* Add Python celery plugin.
+* Fix default config for metrics.
+* Fix trace table for profile ui.
+* Fix the error of server response time in the topology.
+* Fix chart types for setting metrics configure.
+
+#### Documentation
+
+* Add FAQ about `Elasticsearch exception type=version_conflict_engine_exception since 8.7.0`
+* Add Self Observability service discovery (k8s).
+
+All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/90?closed=1)
+
 ------------------
- 
-#### UI -> Collector GraphQL query protocol
-  - Replace all tps to throughtput/cpm(calls per min)
-  - Add `getThermodynamic` service
-  - Update version to beta
- 
-#### Agent Changes
-  - Support TLS.
-  - Support namespace.
-  - Support direct link.
-  - Support token.
-  - Add across thread toolkit.
-  - Add new plugin extend machenism to override agent core implementations.
-  - Fix an agent start up sequence bug.
-  - Fix wrong gc count.
-  - Remove system env override.
-  - Add Spring AOP aspect patch to avoid aop conflicts.
- 
-#### Collector Changes
-  - Trace query based on timeline.
-  - Delete JVM aggregation in second.
-  - Support TLS.
-  - Support namespace.
-  - Support token auth.
-  - Group and aggregate requests based on reponse time and timeline, support Thermodynamic chart query
-  - Support component librariy setting through yml file for better extendibility.
-  - Optimize performance.
-  - Support short column name in ES or other storage implementor.
-  - Add a new cache module implementor, based on **Caffeine**.
-  - Support system property override settings.
-  - Refactor settings initialization.
-  - Provide collector instrumentation agent.
-  - Support .NET core component libraries.
-  - Fix `divide zero` in query.
-  - Fix `Data don't remove as expected` in ES implementor.
-  - Add some checks in collector modulization core.
-  - Add some test cases.
- 
-#### UI Changes
-  - New trace query UI.
-  - New Application UI, merge server tab(removed) into applciation as sub page.
-  - New Topology UI.
-  - New response time / throughput TopN list.
-  - Add Thermodynamic chart in overview page.
-  - Change all tps to cpm(calls per minutes).
-  - Fix wrong osName in server view.
-  - Fix wrong startTime in trace view.
-  - Fix some icons internet requirements.
- 
-#### Documents
-   - Add TLS document.
-   - Add namespace document.
-   - Add direct link document.
-   - Add token document.
-   - Add across thread toolkit document.
-   - Add a FAQ about, `Agent or collector version upgrade`.
-   - Sync all English document to Chinese.
- 
-[Issues and Pull requests](https://github.com/apache/incubator-skywalking/milestone/24)
- 
-5.0.0-alpha
-------------------
- 
-#### Agent -> Collector protocol
- - Remove C++ keywords
- - Move **Ref** into Span from Segment
- - Add span type, when register an operation
-
-#### UI -> Collector GraphQL query protocol
- - First version protocol
- 
-#### Agent Changes
- - Support gRPC 1.x plugin
- - Support kafka 0.11 and 1.x plugin
- - Support ServiceComb 0.x plugin
- - Support optional plugin mechanism.
- - Support Spring 3.x and 4.x bean annotation optional plugin
- - Support Apache httpcomponent AsyncClient 4.x plugin 
- - Provide automatic agent daily tests, and release reports [here](https://github.com/SkywalkingTest/agent-integration-test-report).
- - Refactor Postgresql, Oracle, MySQL plugin for compatible.
- - Fix jetty client 9 plugin error
- - Fix async APIs of okhttp plugin error
- - Fix log config didn't work
- - Fix a class loader error in okhttp plugin
- 
-#### Collector Changes
- - Support metrics analysis and aggregation for application, application instance and service in minute, hour, day and month.
- - Support new GraphQL query protocol
- - Support alarm
- - Provide a prototype instrument for collector.
- - Support node speculate in cluster and application topology. (Provider Node -> Consumer Node) -> (Provider Node -> MQ Server -> Consumer Node)
- 
-#### UI Changes
- - New 5.0.0 UI!!!
- 
- [Issues and Pull requests](https://github.com/apache/incubator-skywalking/milestone/17)
+Find change logs of all versions [here](changes).

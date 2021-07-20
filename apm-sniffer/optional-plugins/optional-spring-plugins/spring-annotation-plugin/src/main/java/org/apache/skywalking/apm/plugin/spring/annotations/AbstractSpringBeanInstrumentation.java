@@ -21,38 +21,67 @@ package org.apache.skywalking.apm.plugin.spring.annotations;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.DeclaredInstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
+import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
+import org.apache.skywalking.apm.agent.core.plugin.match.logical.LogicalMatchOperation;
+import org.apache.skywalking.apm.util.StringUtil;
 
 import static net.bytebuddy.matcher.ElementMatchers.isDeclaredBy;
 import static net.bytebuddy.matcher.ElementMatchers.isPublic;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.not;
+import static org.apache.skywalking.apm.agent.core.plugin.match.ClassAnnotationMatch.byClassAnnotationMatch;
+import static org.apache.skywalking.apm.agent.core.plugin.match.RegexMatch.byRegexMatch;
+import static org.apache.skywalking.apm.plugin.spring.annotations.SpringAnnotationConfig.Plugin.SpringAnnotation.CLASSNAME_MATCH_REGEX;
 
 public abstract class AbstractSpringBeanInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
     private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.annotations.SpringAnnotationInterceptor";
     public static final String INTERCEPT_GET_SKYWALKING_DYNAMIC_FIELD_METHOD = "getSkyWalkingDynamicField";
-    public static final String INTERCEPT_SET_SKYWALKING_DYNAMIC_FEILD_METHOD = "setSkyWalkingDynamicField";
+    public static final String INTERCEPT_SET_SKYWALKING_DYNAMIC_FIELD_METHOD = "setSkyWalkingDynamicField";
 
-    @Override protected final ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
+    @Override
+    public final ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
         return new ConstructorInterceptPoint[0];
     }
 
-    @Override protected final InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
+    @Override
+    public final InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
         return new InstanceMethodsInterceptPoint[] {
-            new InstanceMethodsInterceptPoint() {
-                @Override public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return isPublic().and(not(isDeclaredBy(Object.class)).and(not(named(INTERCEPT_GET_SKYWALKING_DYNAMIC_FIELD_METHOD))).and(not(named(INTERCEPT_SET_SKYWALKING_DYNAMIC_FEILD_METHOD))));
+            new DeclaredInstanceMethodsInterceptPoint() {
+                @Override
+                public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                    return isPublic().and(not(isDeclaredBy(Object.class))
+                                              .and(not(named(INTERCEPT_GET_SKYWALKING_DYNAMIC_FIELD_METHOD)))
+                                              .and(not(named(INTERCEPT_SET_SKYWALKING_DYNAMIC_FIELD_METHOD))));
                 }
 
-                @Override public String getMethodsInterceptor() {
+                @Override
+                public String getMethodsInterceptor() {
                     return INTERCEPTOR_CLASS;
                 }
 
-                @Override public boolean isOverrideArgs() {
+                @Override
+                public boolean isOverrideArgs() {
                     return false;
                 }
             }
         };
     }
+
+    @Override
+    protected ClassMatch enhanceClass() {
+        if (StringUtil.isEmpty(CLASSNAME_MATCH_REGEX)) {
+            return byClassAnnotationMatch(getEnhanceAnnotation());
+        } else {
+            return LogicalMatchOperation.and(
+                byRegexMatch(CLASSNAME_MATCH_REGEX.split(",")),
+                byClassAnnotationMatch(getEnhanceAnnotation())
+            );
+        }
+    }
+
+    protected abstract String getEnhanceAnnotation();
+
 }
