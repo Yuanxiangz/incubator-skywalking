@@ -1,86 +1,73 @@
 Apache SkyWalking
 ==========
 
-<img src="https://skywalkingtest.github.io/page-resources/3.0/skywalking.png" alt="Sky Walking logo" height="90px" align="right" />
+<img src="http://skywalking.apache.org/assets/logo.svg" alt="Sky Walking logo" height="90px" align="right" />
 
-**SkyWalking**: APM (application performance monitor) tool for distributed systems, especially designed for 
-microservices, cloud native and container-based (Docker, Kubernetes, Mesos) architectures.
+**SkyWalking**: an APM (Application Performance Monitoring) system, especially designed for
+microservices, cloud native and container-based architectures.
 
-[![GitHub stars](https://img.shields.io/github/stars/apache/incubator-skywalking.svg?style=for-the-badge&label=Stars&logo=github)](https://github.com/apache/incubator-skywalking)
-[![Twitter Follow](https://img.shields.io/twitter/follow/asfskywalking.svg?style=for-the-badge&label=Follow&logo=twitter)](https://twitter.com/AsfSkyWalking)
+[![GitHub stars](https://img.shields.io/github/stars/apache/skywalking.svg?style=for-the-badge&label=Stars&logo=github)](https://github.com/apache/skywalking)
+[![X Follow](https://img.shields.io/badge/2K%2B-follow?style=for-the-badge&logo=X&label=%40ASFSKYWALKING)](https://x.com/AsfSkyWalking)
 
-
-[![Maven Central](https://img.shields.io/maven-central/v/org.apache.skywalking/apache-skywalking-apm-incubating.svg)](http://skywalking.apache.org/downloads/)
-[![Build Status](https://travis-ci.org/apache/incubator-skywalking.svg?branch=master)](https://travis-ci.org/apache/incubator-skywalking)
-[![Join the chat at https://gitter.im/sky-walking/Lobby](https://badges.gitter.im/openskywalking/Lobby.svg)](https://gitter.im/openskywalking/Lobby)
-[![OpenTracing-1.x Badge](https://img.shields.io/badge/OpenTracing--1.x-enabled-blue.svg)](http://opentracing.io)
+![GitHub Release](https://img.shields.io/github/v/release/apache/skywalking)
 
 # Abstract
-**SkyWalking** started as a distributed tracing system in 2015. From 5.x, it evolved to the fully functional [Application Performance Management](https://en.wikipedia.org/wiki/Application_performance_management) 
-system. It is used for tracing, monitoring, diagnose distributed systems, especially based on microservices, cloud native and container,
-including:
-- Distributed tracing and context propagation
-- Application, instance, service metrics analysis
-- Root cause analysis
-- Application topology map analysis
-- Application and service dependency analysis
-- Slow service detected
-- Performance optimization
+**SkyWalking** is an open-source APM system that provides monitoring, tracing and diagnosing capabilities for distributed systems in Cloud Native architectures.
 
-# Core features
-- Multiple languages instrumentation agent or libraries 
-  - Native Java auto instrumentation agent. Trace and monitor your cluster without changing any source codes
-  - Community instrumentation agent or libraries
-    * [.NET Core](https://github.com/OpenSkywalking/skywalking-netcore) 
-    * [Node.js](https://github.com/OpenSkywalking/skywalking-nodejs)
-- Multiple storage backends: ElasticSearch, H2
-- [OpenTracing](http://opentracing.io/) compatible
-  - Native Java auto instrumentation agent could work with OpenTracing APIs in the same context
-- Lightweight and powerful backend aggregation and analysis capabilities
-- Modern and cool Web UI
-- Log integration
-- Alarm for slow or unstable(low SLA) application, instance and service 
-- [**Incubating**] Support accepting other tracer data formats.
-  - Zipkin JSON, Thrift, Protobuf v1 and v2 formats, powered by [OpenZipkin](https://github.com/openzipkin/zipkin) libs
-  - Jaeger in [Zipkin Thrift or JSON v1/v2 formats](https://github.com/jaegertracing/jaeger#backwards-compatibility-with-zipkin)
-  
-# Announcement
-After SkyWalking 5.0.0-beta2 released, all core features have been provided. For 5 series, we are trying to make them stable from now. At the same time, we have already begun our works for 6 series, in branch `6.0`. It will be a long way to have the first alpha release for it. So if you want to take part in the challengeable works, welcome, but don't consider to use that. Please read the [6.0 documents](https://github.com/apache/incubator-skywalking/blob/6.0/docs/README.md) first.
 
-# Document
-- [Documents in English](docs/README.md)
-- [Documents in Chinese](docs/README_ZH.md)
-
-# 5.x Architecture
-<img src="https://skywalkingtest.github.io/page-resources/5.0/architecture.png"/>
-
-# Code of conduct
-This project adheres to the Contributor Covenant [code of conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to wusheng@apache.org.
+* Distributed Tracing
+  * End-to-end distributed tracing. Service topology analysis, service-centric observability and APIs dashboards.
+* Agents for your stack
+  * Java, .Net Core, PHP, NodeJS, Golang, Lua, Rust, C++, Client JavaScript and Python agents with active development and maintenance.
+* eBPF early adoption
+  * Rover agent works as a monitor and profiler powered by eBPF to monitor Kubernetes deployments and diagnose CPU and network performance.
+* Scaling
+  * 100+ billion telemetry data could be collected and analyzed from one SkyWalking cluster.
+* Mature Telemetry Ecosystems Supported
+  * Metrics, Traces, and Logs from mature ecosystems are supported, e.g. Zipkin, OpenTelemetry, Prometheus, Zabbix, Fluentd
+* Native APM Database
+  * BanyanDB, an observability database, created in 2022, aims to ingest, analyze and store telemetry/observability data.
+* Consistent Metrics Aggregation
+  * SkyWalking native meter format and widely known metrics format (OpenTelemetry, Telegraf, Zabbix, e.g.) are processed through the same script pipeline.
+* Log Management Pipeline
+  * Support log formatting, extract metrics, various sampling policies through script pipeline in high performance.
+* Alerting and Telemetry Pipelines
+  * Support service-centric, deployment-centric, API-centric alarm rule setting. Support forwarding alarms and all telemetry data to 3rd party.
+* AI Power Enabled
+  * Machine Learning (ML) and Artificial Intelligence (AI) analyze observability data to identify patterns and enhance capabilities, such as recognizing HTTP URI patterns and automatically calculating metric baselines for intelligent alerting, improving anomaly detection.
 
 # Live Demo
-- Host in Beijing. [goto](http://49.4.12.44:8080/)
-  - Username: admin
-  - Password: admin
 
-# Screenshot
-<img src="https://skywalkingtest.github.io/page-resources/5.0.0-beta2/Dashboard.png"/>
+[<img src="https://skywalking.apache.org/images/home/horizon-3d-map.png" alt="SkyWalking 3D Infrastructure Map"/>](https://skywalking.apache.org/3d-map-app/#/3d/map)
 
+- Explore the [SkyWalking 3D Infrastructure Map interactive demo](https://skywalking.apache.org/3d-map-app/#/3d/map), a 3D visualization of the service topology powered by [Horizon UI](https://github.com/apache/skywalking-horizon-ui).
+- Find the [SkyWalking live demo with native UI and Grafana](https://skywalking.apache.org/#demo), and [screenshots](https://skywalking.apache.org/#arch) on our website.
+- Follow the [showcase](https://skywalking.apache.org/docs/skywalking-showcase/next/readme/) to set up a preview deployment quickly.
 
-- [See all screenshots](/docs/Screenshots.md)
+# Documentation
+- [Official documentation](https://skywalking.apache.org/docs/#SkyWalking)
+
+# Downloads
+Please head to the [releases page](https://skywalking.apache.org/downloads/) to download a release of Apache SkyWalking.
 
 # Compiling project
-Follow this [document](https://github.com/apache/incubator-skywalking/blob/master/docs/en/How-to-build.md).
+Follow this [document](docs/en/guides/How-to-build.md).
+
+# Code of conduct
+This project adheres to the Contributor Covenant [code of conduct](https://www.apache.org/foundation/policies/conduct). By participating, you are expected to uphold this code.
+Please follow the [REPORTING GUIDELINES](https://www.apache.org/foundation/policies/conduct#reporting-guidelines) to report unacceptable behavior.
 
 # Contact Us
-* Submit an issue
-* Mail list: dev@skywalking.apache.org
-* [Gitter](https://gitter.im/openskywalking/Lobby)
-* QQ Group: 392443393
-
-# Users
-<img src="https://skywalkingtest.github.io/page-resources/users/users-2018-06-07.png"/>
-
-[Submit new user case to us.](https://github.com/apache/incubator-skywalking/issues/443)
+* Mail list: **dev@skywalking.apache.org**. Mail to `dev-subscribe@skywalking.apache.org`, follow the reply to subscribe the mail list.
+* Send `Request to join SkyWalking slack` mail to the mail list(`dev@skywalking.apache.org`), we will invite you in.
+* For Chinese speaker, send `[CN] Request to join SkyWalking slack` mail to the mail list(`dev@skywalking.apache.org`), we will invite you in.
+* Twitter, [ASFSkyWalking](https://twitter.com/AsfSkyWalking)
+* [bilibili B站 视频](https://space.bilibili.com/390683219)
+* [掘金](https://juejin.cn/user/13673577331607/posts)
+  
+# Our Users
+Hundreds of companies and organizations use SkyWalking for research, production, and commercial purposes.
+Visit our [website](http://skywalking.apache.org/users/) to find the user page.
 
 # License
-[Apache 2.0 License.](/LICENSE)
+[Apache 2.0 License.](LICENSE)
